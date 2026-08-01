@@ -49,12 +49,13 @@ jobs:
           path: ~/.isochrones
           key: mist-grid-v1-${{ runner.os }}
           restore-keys: |
-            mist-grid-v1-
+            isochrones-test-data-v1-
 
       # use old Travis CI script to download data if it isn't cached
-      - name: Download data
-        if: steps.cache-mist.outputs.cache-hit != 'true'
-        run: mist-initialize.py
+      # seems to be broken
+      # - name: Download data
+      #   if: steps.cache-mist.outputs.cache-hit != 'true'
+      #   run: mist-initialize.py
 
       - name: Run tests
         run: pytest -v
