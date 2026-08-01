@@ -1,0 +1,65 @@
+name: CI
+
+on:
+  push:
+  # uncomment before opening PR
+  #   branches: [master]
+  # pull_request:
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        python-version: ["3.9"]
+
+    env:
+      # this was in the original Travis CI definition
+      MPLBACKEND: Agg
+
+    defaults:
+      run:
+        shell: bash -l {0}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: conda-incubator/setup-miniconda@v3
+        with:
+          miniforge-version: latest
+          python-version: ${{ matrix.python-version }}
+          channels: conda-forge
+          channel-priority: strict
+          activate-environment: isochrones-test
+          auto-update-conda: false
+
+      - name: Install isochrones
+        run: |
+          conda install -y -c conda-forge \
+            numpy numba cython pytables pandas \
+            multinest pymultinest \
+            pytest codecov
+          pip install .
+
+      - name: Cache data
+        id: cache-data
+        uses: actions/cache@v4
+        with:
+          path: ~/.isochrones
+          key: mist-grid-v1-${{ runner.os }}
+          restore-keys: |
+            mist-grid-v1-
+
+      # use old Travis CI script to download data if it isn't cached
+      - name: Download data
+        if: steps.cache-mist.outputs.cache-hit != 'true'
+        run: mist-initialize.py
+
+      - name: Run tests
+        run: pytest -v
+
+      # copied from Travis CI scripts, not sure it works
+      - name: Upload coverage
+        if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.11'
+        run: codecov
