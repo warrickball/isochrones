@@ -23,9 +23,9 @@ jobs:
         shell: bash -l {0}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
-      - uses: conda-incubator/setup-miniconda@v3
+      - uses: conda-incubator/setup-miniconda@v4
         with:
           miniforge-version: latest
           python-version: ${{ matrix.python-version }}
@@ -44,7 +44,7 @@ jobs:
 
       - name: Cache data
         id: cache-data
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ~/.isochrones
           key: mist-grid-v1-${{ runner.os }}

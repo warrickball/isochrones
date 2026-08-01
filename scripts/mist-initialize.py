@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 from isochrones import get_ichrone
 
 mist = get_ichrone("mist", bands="JHK")
