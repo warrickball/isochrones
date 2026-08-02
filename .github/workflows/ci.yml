@@ -39,29 +39,26 @@ jobs:
           conda install -q -y -c conda-forge \
             numpy numba cython pytables pandas \
             multinest pymultinest \
-            pytest codecov
+            pytest pytest-cov
           pip install .
 
       # first see if tests run at all before we try caching
-      # - name: Cache data
-      #   id: cache-data
-      #   uses: actions/cache@v6
-      #   with:
-      #     path: ~/.isochrones
-      #     key: mist-grid-v1-${{ runner.os }}
-      #     restore-keys: |
-      #       isochrones-test-data-v1-
+      - name: Cache data
+        id: cache-data
+        uses: actions/cache@v6
+        with:
+          path: ~/.isochrones
+          key: mist-grid-v1-${{ runner.os }}
+          restore-keys: |
+            isochrones-test-data-v1-
 
-      # use old Travis CI script to download data if it isn't cached
-      # seems to be broken
+      # this would use old Travis CI script to download data if it isn't cached
+      # but it seems to be broken
       # - name: Download data
       #   if: steps.cache-mist.outputs.cache-hit != 'true'
       #   run: mist-initialize.py
 
+      # Travis CI script just ran after the tests
+      # but this just uses the pytest coverage plugin
       - name: Run tests
-        run: pytest -v
-
-      # copied from Travis CI scripts, not sure it works
-      - name: Upload coverage
-        if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.11'
-        run: codecov
+        run: pytest -v --cov --cov-report=term-missing
