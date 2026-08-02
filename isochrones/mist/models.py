@@ -240,7 +240,7 @@ class MISTEvolutionTrackGrid(MISTModelGrid):
     def get_tarball_url(self, feh):
         basename = self.get_file_basename(feh)
         version = self.kwargs["version"]
-        return "https://mist.science/BC_tables/v{version}/{basename}.txz".format(
+        return "https://mist.science/data/tarballs_v{version}/{basename}.txz".format(
             version=version, basename=basename
         )
         return os.path.join(self.datadir, "{}.txz".format(basename))
