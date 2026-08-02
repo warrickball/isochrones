@@ -42,14 +42,15 @@ jobs:
             pytest codecov
           pip install .
 
-      - name: Cache data
-        id: cache-data
-        uses: actions/cache@v6
-        with:
-          path: ~/.isochrones
-          key: mist-grid-v1-${{ runner.os }}
-          restore-keys: |
-            isochrones-test-data-v1-
+      # first see if tests run at all before we try caching
+      # - name: Cache data
+      #   id: cache-data
+      #   uses: actions/cache@v6
+      #   with:
+      #     path: ~/.isochrones
+      #     key: mist-grid-v1-${{ runner.os }}
+      #     restore-keys: |
+      #       isochrones-test-data-v1-
 
       # use old Travis CI script to download data if it isn't cached
       # seems to be broken
